@@ -1,17 +1,31 @@
 extern crate core;
+
 use core::iter::Repeat;
+use std::io::File;
 use std::io;
 
 fn main() {
-    let program: Vec<char> =
-        "
-            -,+[-[>>++++[>++++++++<-]<+<-[>+>+>-[>>>]<[[>+<-]>>+>]<<<<<-]]>>>[-]+>--[-[<->+++[-]]]<[++++++++++++<[>-[>+>>]>[+[<+>-]>+>>]<<<<<-]>>[<+>-]>[-[-<<[-]>>]<<[<<->>-]>>]<<[<<+>>-]]<[-]<.[-]<-,+]
-        ".chars().collect();
+    let args = std::os::args().clone();
+
+    if args.len() != 2 {
+        fail!("Usage: brainfuck <file>");
+    }
+
+    let path_string = std::os::args()[1].clone();
+    let path = Path::new(path_string);
+
+    let file = match File::open(&path) {
+        Ok(mut f) => f.read_to_string().ok().unwrap(),
+        Err(e) => fail!("Could not open file: {}", e)
+    };
+
+    let program: Vec<char> = file.as_slice().chars().collect();
     let mut program_pointer = 0u;
-    let mut reader = io::stdin();
 
     let mut tape: Vec<u8> = Repeat::new(0u8).take(30_000u).collect();
     let mut tape_pointer = 0u;
+
+    let mut reader = io::stdin();
 
     while program_pointer != program.len() as uint {
         match program[program_pointer] {
