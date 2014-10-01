@@ -1,0 +1,65 @@
+use std::io::File;
+
+pub struct Program {
+    content: Vec<char>,
+    pub pointer: uint
+}
+
+impl Program {
+    pub fn new(file_path: &Path) -> Program {
+        let content = Program::read_program(file_path);
+        Program {
+            content: content,
+            pointer: 0
+        }
+    }
+
+    pub fn len(&mut self) -> uint {
+        self.content.len()
+    }
+
+    pub fn next(&mut self) {
+        self.pointer += 1;
+    }
+
+    pub fn prev(&mut self) {
+        self.pointer -= 1;
+    }
+
+    pub fn command(&mut self) -> char {
+        self.content[self.pointer]
+    }
+
+    pub fn fast_forward(&mut self, count: uint) {
+        if count != 0 {
+            self.next();
+
+            match self.command() {
+                ']' => self.fast_forward(count - 1),
+                '[' => self.fast_forward(count + 1),
+                 _  => self.fast_forward(count)
+            }
+        }
+    }
+
+    pub fn rewind(&mut self, count: uint) {
+        if count != 0 {
+            self.prev();
+
+            match self.command() {
+                '[' => self.rewind(count - 1),
+                ']' => self.rewind(count + 1),
+                 _  => self.rewind(count)
+            }
+        }
+    }
+
+    fn read_program(path: &Path) -> Vec<char> {
+        let file = match File::open(path) {
+            Ok(mut f) => f.read_to_string().ok().unwrap(),
+            Err(e) => fail!("Could not open file: {}", e)
+        };
+
+        file.as_slice().chars().collect()
+    }
+}

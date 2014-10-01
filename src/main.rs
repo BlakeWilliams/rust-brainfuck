@@ -1,8 +1,11 @@
 extern crate core;
 
-use core::iter::Repeat;
 use std::io::File;
 use std::io;
+use self::brainfuck::tape;
+use self::brainfuck::program;
+
+mod brainfuck;
 
 fn main() {
     let args = std::os::args().clone();
@@ -14,72 +17,34 @@ fn main() {
     let path_string = std::os::args()[1].clone();
     let path = Path::new(path_string);
 
-    let file = match File::open(&path) {
-        Ok(mut f) => f.read_to_string().ok().unwrap(),
-        Err(e) => fail!("Could not open file: {}", e)
-    };
-
-    let program: Vec<char> = file.as_slice().chars().collect();
-    let mut program_pointer = 0u;
-
-    let mut tape: Vec<u8> = Repeat::new(0u8).take(30_000u).collect();
-    let mut tape_pointer = 0u;
+    let mut program = program::Program::new(&path);
+    let mut tape = tape::Tape::new();
 
     let mut reader = io::stdin();
 
-    while program_pointer != program.len() as uint {
-        match program[program_pointer] {
-            '+' => *tape.get_mut(tape_pointer) += 1u8,
-            '-' => *tape.get_mut(tape_pointer) -= 1u8,
-            '>' => tape_pointer += 1u,
-            '<' => tape_pointer -= 1u,
-            '.' => print!("{}", *tape.get(tape_pointer) as char),
+    while program.pointer != program.len() as uint {
+        match program.command() {
+            '+' => tape.inc(),
+            '-' => tape.dec(),
+            '>' => tape.next(),
+            '<' => tape.prev(),
+            '.' => print!("{}", tape.char_value()),
             ',' => {
-                *tape.get_mut(tape_pointer) = reader.read_char().ok().unwrap() as u8
+                tape.set_value(reader.read_char().ok().unwrap() as u8);
             },
             '[' => {
-                if tape[tape_pointer] == 0 {
-                    program_pointer = fast_forward(&program, program_pointer, 1);
+                if tape.value() == 0 {
+                    program.fast_forward(1);
                 }
             },
             ']' => {
-                if tape[tape_pointer] != 0 {
-                    program_pointer = rewind(&program, program_pointer, 1);
+                if tape.value() != 0 {
+                    program.rewind(1);
                 }
             },
             _ => ()
         }
 
-        program_pointer += 1;
-    }
-}
-
-fn fast_forward(program: &Vec<char>, program_pointer: uint, count: uint) -> uint {
-    let pointer = program_pointer + 1;
-    let command = program[pointer];
-
-    if count == 0 {
-        pointer - 1
-    } else {
-        match command {
-            ']' => fast_forward(program, pointer, count - 1),
-            '[' => fast_forward(program, pointer, count + 1),
-             _  => fast_forward(program, pointer, count)
-        }
-    }
-}
-
-fn rewind(program: &Vec<char>, program_pointer: uint, count: uint) -> uint {
-    let pointer = program_pointer - 1;
-    let command = program[pointer];
-
-    if count == 0 {
-        pointer + 1
-    } else {
-        match command {
-            ']' => rewind(program, pointer, count + 1),
-            '[' => rewind(program, pointer, count - 1),
-             _  => rewind(program, pointer, count)
-        }
+        program.next();
     }
 }
