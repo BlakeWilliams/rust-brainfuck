@@ -18,11 +18,11 @@ impl Program {
         self.content.len()
     }
 
-    pub fn next(&mut self) {
+    pub fn forward(&mut self) {
         self.pointer += 1;
     }
 
-    pub fn prev(&mut self) {
+    pub fn back(&mut self) {
         self.pointer -= 1;
     }
 
@@ -32,7 +32,7 @@ impl Program {
 
     pub fn fast_forward(&mut self, count: uint) {
         if count != 0 {
-            self.next();
+            self.forward();
 
             match self.command() {
                 ']' => self.fast_forward(count - 1),
@@ -44,7 +44,7 @@ impl Program {
 
     pub fn rewind(&mut self, count: uint) {
         if count != 0 {
-            self.prev();
+            self.back();
 
             match self.command() {
                 '[' => self.rewind(count - 1),

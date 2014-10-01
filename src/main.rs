@@ -45,6 +45,6 @@ fn main() {
             _ => ()
         }
 
-        program.next();
+        program.forward();
     }
 }
