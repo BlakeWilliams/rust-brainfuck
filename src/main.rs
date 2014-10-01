@@ -8,14 +8,7 @@ use self::brainfuck::program;
 mod brainfuck;
 
 fn main() {
-    let args = std::os::args().clone();
-
-    if args.len() != 2 {
-        fail!("Usage: brainfuck <file>");
-    }
-
-    let path_string = std::os::args()[1].clone();
-    let path = Path::new(path_string);
+    let path = get_path();
 
     let mut program = program::Program::new(&path);
     let mut tape = tape::Tape::new();
@@ -47,4 +40,15 @@ fn main() {
 
         program.forward();
     }
+}
+
+fn get_path() -> Path {
+    let args = std::os::args().clone();
+
+    if args.len() != 2 {
+        fail!("Usage: brainfuck <file>");
+    }
+
+    let path_string = std::os::args()[1].clone();
+    Path::new(path_string)
 }
