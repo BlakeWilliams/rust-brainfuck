@@ -14,7 +14,7 @@ impl Program {
         }
     }
 
-    pub fn len(&mut self) -> uint {
+    pub fn len(&self) -> uint {
         self.content.len()
     }
 
@@ -26,7 +26,7 @@ impl Program {
         self.pointer -= 1;
     }
 
-    pub fn command(&mut self) -> char {
+    pub fn command(&self) -> char {
         self.content[self.pointer]
     }
 
