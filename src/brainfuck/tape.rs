@@ -39,7 +39,6 @@ impl Tape {
         self.content[self.pointer]
     }
 
-
     pub fn read_value(&mut self, reader: &mut BufferedReader<StdReader>) {
         let value = reader.read_char().ok().unwrap() as u8;
         self.set_value(value)
