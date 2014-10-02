@@ -23,16 +23,8 @@ fn main() {
             '<' => tape.prev(),
             '.' => print!("{}", tape.value() as char),
             ',' => tape.read_value(&mut reader),
-            '[' => {
-                if tape.value() == 0 {
-                    program.fast_forward(1);
-                }
-            },
-            ']' => {
-                if tape.value() != 0 {
-                    program.rewind(1);
-                }
-            },
+            '[' if tape.zero() => program.fast_forward(1),
+            ']' if tape.not_zero() => program.rewind(1),
             _ => ()
         }
 

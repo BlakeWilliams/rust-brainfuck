@@ -31,8 +31,16 @@ impl Tape {
         self.pointer -= 1;
     }
 
-    pub fn value(&mut self) -> u8 {
+    pub fn value(&self) -> u8 {
         self.content[self.pointer]
+    }
+
+    pub fn zero(&self) -> bool {
+        self.value() == 0
+    }
+
+    pub fn not_zero(&self) -> bool {
+        !self.zero()
     }
 
     pub fn read_value(&mut self, reader: &mut BufferedReader<StdReader>) {
