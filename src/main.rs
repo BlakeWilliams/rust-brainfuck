@@ -1,7 +1,7 @@
 extern crate core;
 
-use std::io::File;
 use std::io;
+
 use self::brainfuck::tape;
 use self::brainfuck::program;
 
@@ -22,9 +22,7 @@ fn main() {
             '>' => tape.next(),
             '<' => tape.prev(),
             '.' => print!("{}", tape.char_value()),
-            ',' => {
-                tape.set_value(reader.read_char().ok().unwrap() as u8);
-            },
+            ',' => tape.read_value(&mut reader),
             '[' => {
                 if tape.value() == 0 {
                     program.fast_forward(1);
