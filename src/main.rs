@@ -21,7 +21,7 @@ fn main() {
             '-' => tape.dec(),
             '>' => tape.next(),
             '<' => tape.prev(),
-            '.' => print!("{}", tape.char_value()),
+            '.' => print!("{}", tape.value() as char),
             ',' => tape.read_value(&mut reader),
             '[' => {
                 if tape.value() == 0 {

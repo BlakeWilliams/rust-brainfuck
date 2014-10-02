@@ -31,10 +31,6 @@ impl Tape {
         self.pointer -= 1;
     }
 
-    pub fn char_value(&mut self) -> char {
-        self.content[self.pointer] as char
-    }
-
     pub fn value(&mut self) -> u8 {
         self.content[self.pointer]
     }
