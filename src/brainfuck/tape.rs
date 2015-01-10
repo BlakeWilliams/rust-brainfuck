@@ -1,26 +1,25 @@
-use core::iter::Repeat;
-use std::io::BufferedReader;
-use std::io::stdio::StdReader;
+use std::iter;
+use std::io::stdio::StdinReader;
 
 pub struct Tape {
     content: Vec<u8>,
-    pointer: uint
+    pointer: usize
 }
 
 impl Tape {
     pub fn new() -> Tape {
         Tape {
-            content: Repeat::new(0u8).take(30_000u).collect(),
+            content: iter::repeat(0u8).take(30_000us).collect(),
             pointer: 0,
         }
     }
 
     pub fn inc(&mut self) {
-        *self.content.get_mut(self.pointer) += 1u8;
+        *self.content.get_mut(self.pointer).unwrap() += 1u8;
     }
 
     pub fn dec(&mut self) {
-        *self.content.get_mut(self.pointer) -= 1u8;
+        *self.content.get_mut(self.pointer).unwrap() -= 1u8;
     }
 
     pub fn next(&mut self) {
@@ -43,12 +42,12 @@ impl Tape {
         !self.zero()
     }
 
-    pub fn read_value(&mut self, reader: &mut BufferedReader<StdReader>) {
+    pub fn read_value(&mut self, reader: &mut StdinReader) {
         let value = reader.read_char().ok().unwrap() as u8;
         self.set_value(value)
     }
 
     fn set_value(&mut self, value: u8) {
-        *self.content.get_mut(self.pointer) = value;
+        *self.content.get_mut(self.pointer).unwrap() = value;
     }
 }

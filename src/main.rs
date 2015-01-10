@@ -15,7 +15,7 @@ fn main() {
 
     let mut reader = io::stdin();
 
-    while program.pointer != program.len() as uint {
+    while program.pointer != program.len() as usize {
         match program.command() {
             '+' => tape.inc(),
             '-' => tape.dec(),
@@ -36,7 +36,7 @@ fn get_path() -> Path {
     let args = std::os::args().clone();
 
     if args.len() != 2 {
-        fail!("Usage: brainfuck <file>");
+        panic!("Usage: brainfuck <file>");
     }
 
     let path_string = std::os::args()[1].clone();

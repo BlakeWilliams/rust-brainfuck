@@ -2,7 +2,7 @@ use std::io::File;
 
 pub struct Program {
     content: Vec<char>,
-    pub pointer: uint
+    pub pointer: usize
 }
 
 impl Program {
@@ -14,7 +14,7 @@ impl Program {
         }
     }
 
-    pub fn len(&self) -> uint {
+    pub fn len(&self) -> usize {
         self.content.len()
     }
 
@@ -30,7 +30,7 @@ impl Program {
         self.content[self.pointer]
     }
 
-    pub fn fast_forward(&mut self, count: uint) {
+    pub fn fast_forward(&mut self, count: usize) {
         if count != 0 {
             self.forward();
 
@@ -42,7 +42,7 @@ impl Program {
         }
     }
 
-    pub fn rewind(&mut self, count: uint) {
+    pub fn rewind(&mut self, count: usize) {
         if count != 0 {
             self.back();
 
@@ -57,7 +57,7 @@ impl Program {
     fn read_program(path: &Path) -> Vec<char> {
         let file = match File::open(path) {
             Ok(mut f) => f.read_to_string().ok().unwrap(),
-            Err(e) => fail!("Could not open file: {}", e)
+            Err(e) => panic!("Could not open file: {}", e)
         };
 
         file.as_slice().chars().collect()
